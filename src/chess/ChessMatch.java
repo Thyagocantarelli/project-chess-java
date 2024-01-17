@@ -1,5 +1,7 @@
 package chess;
 
+import javax.swing.border.Border;
+
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
@@ -29,8 +31,16 @@ public class ChessMatch {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
 		validateSoucePosition(source);
+		validatetargetPosition(source, target);
 		Piece capturedPiece = makeMove(source,target);
 		return (ChessPiece)capturedPiece;
+	}
+	
+	private Piece makeMove(Position source, Position target) {
+		Piece p = board.removePiece(source);
+		Piece capturePiece = board.removePiece(target);
+		board.placePiece(p, target);
+		return capturePiece;
 	}
 	
 	private void validateSoucePosition(Position position) {
@@ -42,12 +52,14 @@ public class ChessMatch {
 		}
 	}
 	
-	private Piece makeMove(Position source, Position target) {
-		Piece p = board.removePiece(source);
-		Piece capturePiece = board.removePiece(target);
-		board.placePiece(p, target);
-		return capturePiece;
+	private void validatetargetPosition(Position source, Position target) {
+		if(!board.piece(source).possibleMoves(target)) {
+			throw new ChessException("A peça de origem não pode se mover para a posição de destino");
+		}
+		
+		
 	}
+	
 	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
